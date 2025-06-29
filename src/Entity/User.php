@@ -4,10 +4,11 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: "users")]
-class User implements UserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -42,26 +43,14 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * Returns the identifier for this user (e.g. email or username).
-     */
     public function getUserIdentifier(): string
     {
         return $this->email;
     }
 
-    /**
-     * Deprecated since Symfony 5.3, use getUserIdentifier() instead.
-     */
-    public function getUsername(): string
-    {
-        return $this->getUserIdentifier();
-    }
-
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         if (!in_array('ROLE_USER', $roles, true)) {
             $roles[] = 'ROLE_USER';
         }
@@ -85,18 +74,12 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getSalt(): ?string
-    {
-        // Not needed if using modern algorithms (bcrypt, sodium)
-        return null;
-    }
-
     public function eraseCredentials(): void
     {
         // Clear any temporary sensitive data here if needed
     }
 
-    public function getUsernameField(): string
+    public function getUsername(): string
     {
         return $this->username;
     }
