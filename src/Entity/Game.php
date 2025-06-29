@@ -2,31 +2,30 @@
 
 namespace App\Entity;
 
-use App\Repository\GameGenreRepository;
+use App\Repository\GameRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: GameGenreRepository::class)]
+#[ORM\Entity(repositoryClass: GameRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class GameGenre
+class Game
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private int $id;
 
     #[ORM\Column(length: 255)]
     private string $name;
+
+    #[ORM\ManyToOne(targetEntity: GameGenre::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private GameGenre $genre;
 
     #[ORM\Column(type: "datetime")]
     private \DateTimeInterface $createdAt;
 
     #[ORM\Column(type: "datetime")]
     private \DateTimeInterface $updatedAt;
-
-    public function __construct(string $name)
-    {
-        $this->name = $name;
-    }
 
     public function getId(): ?int
     {
@@ -41,6 +40,17 @@ class GameGenre
     public function setName(string $name): static
     {
         $this->name = $name;
+        return $this;
+    }
+
+    public function getGenre(): GameGenre
+    {
+        return $this->genre;
+    }
+
+    public function setGenre(GameGenre $genre): static
+    {
+        $this->genre = $genre;
         return $this;
     }
 
